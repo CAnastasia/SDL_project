@@ -1,0 +1,50 @@
+EXEC_TEXT_NAME= versionTXT
+EXEC_TEXT_NAME= RegressionTest 
+
+CC = g++
+CFLAGS = -Wall -ggdb
+INCLUDES = -I/usr/includes
+LIBS = -L/usr/libs
+SRC_BASE=./src/main/
+OBJ_BASE=./obj/main/
+SRC_TXT=./src/txt/
+OBJ_TXT=./obj/txt/
+SRC_test=./src/test/
+OBJ_test=./obj/test/
+HEADER_BASE=./src/main/
+HEADER_TXT =./src/txt/
+HEADER_TEST =./src/test/
+INCLUDES_DIR= -I/src -I/src/main -I/src/TXT
+EXEC=./bin/
+
+OBJ_FILES_BASE = $(OBJ_BASE)ElementTD.o $(OBJ_BASE)TableauDynamique.o $(OBJ_BASE)push_swap.o $(OBJ_BASE)jeu.o 
+OBJ_FILES_TEST = $(OBJ_test)maintest.o 
+OBJ_FILES_TXT = $(OBJ_TXT)main_text.o 
+SRC_FILES_TXT = $(SRC_TXT)main_text.cpp
+SRC_FILES_TEST = $(SRC_test)maintest.cpp
+SRC_FILES_BASE =  $(SRC_BASE)ElementTD.cpp $(SRC_BASE)TableauDynamique.cpp $(SRC_BASE)push_swap.cpp $(SRC_BASE)jeu.cpp 
+HDR_FILES_BASE = $(HEADER_BASE)ElementTD.h $(HEADER_BASE)TableauDynamique.h $(HEADER_BASE)push_swap.h $(HEADER_BASE)jeu.h 
+
+
+all : $(EXEC_TEXT_NAME) $(EXEC_TEST_NAME) 
+
+$(EXEC_TEST_NAME)  : $(OBJ_FILES_BASE) $(OBJ_FILES_TEST)
+	@$(CC) $(OBJ_FILES_BASE) $(OBJ_FILES_TEST) $(LIBS) -o $(EXEC)$(EXEC_TEST_NAME)
+
+$(EXEC_TEXT_NAME): $(OBJ_FILES_BASE) $(OBJ_FILES_TXT)
+	@$(CC) $(OBJ_FILES_BASE) $(OBJ_FILES_TXT) $(LIBS) -o $(EXEC)$(EXEC_TEXT_NAME) 
+		
+$(OBJ_FILES_TEST): $(SRC_FILES_TEST)
+	@$(CC) $(CFLAGS) -o $@ -c $< $(INCLUDES)
+	
+$(OBJ_FILES_TXT):$(SRC_FILES_TXT) 
+	@$(CC) $(CFLAGS) -o $@ -c $< $(INCLUDES)
+	
+$(OBJ_FILES_BASE): $(SRC_FILES_BASE)
+	@$(CC) $(CFLAGS) -o $@ -c $< $(INCLUDES)
+	
+clean: 
+	@rm $(OBJ)$(OBJ_FILES)
+	
+veryclean: clean 
+	@rm $(EXEC)$(EXEC_NAME)

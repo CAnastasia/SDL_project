@@ -1,0 +1,56 @@
+# depslib dependency file v1.0
+1523526333 source:/home/etu/p1508726/Téléchargements/game/src/main/ElementTD.cpp
+	<iostream>
+	"ElementTD.h"
+
+1523346846 /home/etu/p1508726/Téléchargements/game/src/main/ElementTD.h
+
+1523545076 source:/home/etu/p1508726/Téléchargements/game/src/main/jeu.cpp
+	<stdlib.h>
+	<iostream>
+	<unistd.h>
+	<fstream>
+	<windows.h>
+	<stdio.h>
+	<time.h>
+	<ctime>
+	<assert.h>
+	"./jeu.h"
+
+1523545094 /home/etu/p1508726/Téléchargements/game/src/main/jeu.h
+	"./push_swap.h"
+
+1523346846 /home/etu/p1508726/Téléchargements/game/src/main/TableauDynamique.h
+	"ElementTD.h"
+
+1523535076 /home/etu/p1508726/Téléchargements/game/src/main/push_swap.h
+	<string.h>
+	"TableauDynamique.h"
+
+1523544632 source:/home/etu/p1508726/Téléchargements/game/src/main/push_swap.cpp
+	<iostream>
+	<windows.h>
+	<stdlib.h>
+	<fstream>
+	<assert.h>
+	"push_swap.h"
+
+1523534057 source:/home/etu/p1508726/Téléchargements/game/src/main/TableauDynamique.cpp
+	"TableauDynamique.h"
+	<iostream>
+	<stdlib.h>
+
+1523354178 source:/home/etu/p1508726/Téléchargements/game/src/serveur/serveur.cpp
+
+1523541574 source:/home/etu/p1508726/Téléchargements/game/src/txt/main_text.cpp
+	<stdlib.h>
+	<iostream>
+	<unistd.h>
+	<windows.h>
+	<stdio.h>
+	<string.h>
+	<fstream>
+	<time.h>
+	<ctime>
+	"../main/jeu.h"
+
