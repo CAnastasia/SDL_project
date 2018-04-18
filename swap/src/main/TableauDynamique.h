@@ -2,6 +2,8 @@
 #define _TAB_DYN
 
 #include "ElementTD.h"
+#include <string>
+using namespace std;
 
 class TableauDynamique {
 public:
@@ -62,6 +64,8 @@ public:
     /* Precondition : le tableau est tri� dans l'ordre croissant */
     /* R�sultat : indice de l'emplacement qui contient un ElementTD �gal � e,
                   -1 si le tableau ne contient pas d'�l�ment �gal � e */
+
+    string TDtoString ();
 
 };
 

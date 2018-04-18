@@ -1,25 +1,23 @@
-#include <SDL2/SDL.h>
 #include <SDL_ttf.h>
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <fstream>
-#include "TableauDynamique.h"
 #include "affichage_SDL.h"
-#include "bouton_SDL.h"
+
 
 
 void affichageSDL::initSDL() {
-    
+
     WINDIMX = 800;
     WINDIMY = 600;
-    
+
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         cout << "Erreur lors de l'initialisation de la SDL : " << SDL_GetError() << endl;
         SDL_Quit();
         exit(EXIT_FAILURE);
     }
-    
+
     window = SDL_CreateWindow(
 		 "Test SDL 2.0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDIMX, WINDIMY, SDL_WINDOW_SHOWN);
     if(window == 0) {
@@ -27,28 +25,28 @@ void affichageSDL::initSDL() {
         SDL_Quit();
         exit(EXIT_FAILURE);
     }
-    
+
     if (TTF_Init() != 0) {
         cout << "Erreur lors de l'initialisation de la SDL_ttf : " << TTF_GetError() << endl;
         SDL_Quit();
         exit(EXIT_FAILURE);
     }
-    
+
     font = TTF_OpenFont("data/DejaVuSansCondensed.ttf",100);
     if (font == NULL) {
             cout << "Failed to losad OpenSans.ttf! SDL_TTF Error: " << TTF_GetError() << endl;
             SDL_Quit();
             exit(EXIT_FAILURE);
 	}
-	
+
 	font_color.r = 50;font_color.g = 50;font_color.b = 255;
-    
-    renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED); 
-    
+
+    renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+
     SDL_SetRenderDrawColor(renderer, 230, 240, 255, 255);
-   
-    
-    
+
+
+
 }
 
 SDL_Texture* affichageSDL::CreateTextureFromString(string txt) {
@@ -58,7 +56,7 @@ SDL_Texture* affichageSDL::CreateTextureFromString(string txt) {
 }
 
 void affichageSDL::initListes() {
-     
+
     tdA.ajouterElement(1);
     tdA.ajouterElement(2);
     tdA.ajouterElement(3);
@@ -67,8 +65,8 @@ void affichageSDL::initListes() {
     posListeA.y=0.2*WINDIMY;
     posListeA.w=200;
     posListeA.h=100;
-    
-    tdB.ajouterElement(0);
+
+    tdB.ajouterElement(1);
     tdB.ajouterElement(0);
     tdB.ajouterElement(0);
     tdB.ajouterElement(0);
@@ -76,15 +74,15 @@ void affichageSDL::initListes() {
     posListeB.y=0.5*WINDIMY;
     posListeB.w=200;
     posListeB.h=100;
-    
+
     textureListeA = CreateTextureFromString(tdA.TDtoString());
     textureListeB = CreateTextureFromString(tdB.TDtoString());
-    
+
     /*listeA = TTF_RenderText_Solid(font,tdA.TDtoString().c_str(),font_color);
     listeB = TTF_RenderText_Solid(font,tdB.TDtoString().c_str(),font_color);
-    
+
     std::cout << "tda: " << tdA.TDtoString() << std::endl << "tdb :" << tdB.TDtoString() << std::endl;
-    
+
     textureListeA = SDL_CreateTextureFromSurface(renderer, listeA);
     textureListeB = SDL_CreateTextureFromSurface(renderer, listeB);
     */
@@ -113,19 +111,58 @@ void affichageSDL::initBoutons() {
 }
 
 void affichageSDL::updateListes(const std::string& op) {
-    TableauDynamique tdtest;
-    tdtest.ajouterElement(5);
-    tdtest.ajouterElement(6);
-    tdtest.ajouterElement(7);
-    tdtest.ajouterElement(8);
-    
-    textureListeA = CreateTextureFromString (tdtest.TDtoString());
-    
+    niveau niveau1;
+    if(op=="sa")
+    {
+      niveau1.sa(tdA);
+    }
+    if(op=="sb")
+    {
+      niveau1.sa(tdB);
+    }
+    if(op=="ss")
+    {
+      niveau1.ss(tdA,tdB);
+    }
+    if(op=="pb")
+    {
+      niveau1.pa(tdA,tdB);
+    }
+    if(op=="pa")
+    {
+      niveau1.pa(tdB,tdA);
+    }
+    if(op=="ra")
+    {
+      niveau1.ra(tdA);
+    }
+    if(op=="rb")
+    {
+      niveau1.ra(tdB);
+    }
+    if(op=="rr")
+    {
+      niveau1.rr(tdA,tdB);
+    }
+    if(op=="rra")
+    {
+      niveau1.rra(tdA);
+    }
+    if(op=="rrb")
+    {
+      niveau1.rra(tdB);
+    }
+    if(op=="rrr")
+    {
+      niveau1.rrr(tdA,tdB);
+    }
+    textureListeA = CreateTextureFromString (tdA.TDtoString());
+    textureListeB = CreateTextureFromString (tdB.TDtoString());
 }
 
 
 void affichageSDL::detruitSDL() {
- 
+
     TTF_CloseFont(font);
     TTF_Quit();
     SDL_DestroyRenderer(renderer);
@@ -133,44 +170,44 @@ void affichageSDL::detruitSDL() {
     SDL_DestroyTexture(textureListeB);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    
+
 }
 
 void affichageSDL::boucleSDL() {
-    
-	while(!terminer) {        
+
+	while(!terminer) {
         SDL_WaitEvent(&events);
 
         if(events.window.event == SDL_WINDOWEVENT_CLOSE
                     || events.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
             terminer = true;
-        
+
         SDL_RenderClear(renderer);
-        
-        
-        
-        
+
+
+
+
         for (int i = 0; i <= 10; i++) {
             int op = tabBouton[i].handle_events();
             std::string currentOp = tabBouton[i].getOpStr();
             if(op!=0){
-                updateListes(currentOp);             
-            
+                updateListes(currentOp);
+
             }
-            
+
             SDL_Rect temp = tabBouton[i].getPos();
             //std::cout << i << " : " << std::endl << "x=" << tabBouton[i].getPos().x << "; y=" << tabBouton[i].getPos().y
             //                                    << "; w=" << tabBouton[i].getPos().w << "; h=" << tabBouton[i].getPos().h << std::endl;
             SDL_RenderCopy(renderer, tabBouton[i].imgTexture, NULL, &temp);
             /* il est nécessaire de prendre un pointeur sur un SDL_Rect pour la fonction
-             * SDL_RenderCopy, cependant il est impossible de prendre directement l'adresse 
+             * SDL_RenderCopy, cependant il est impossible de prendre directement l'adresse
              * d'un membre d'une classe en c++. Donc on utilise une variable intermédiaire */
         }
-        
+
         SDL_RenderCopy(renderer, textureListeA, NULL, &posListeA);
         SDL_RenderCopy(renderer, textureListeB, NULL, &posListeB);
-        
+
         SDL_RenderPresent(renderer);
     }
-    
+
 }

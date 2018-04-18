@@ -1,4 +1,4 @@
-#include <readerwriter.hpp>
+#include "readerwriter.hpp"
 #include <sstream>
 #include <iostream>
 #include <cerrno>
@@ -83,7 +83,7 @@ int socklib::ReaderWriter::read(char *buf, int offset, int len, bool wait_all) {
     }
     deja += nblus;
 
-    //    std::cerr << "lu : " << nblus << "caractères " << 
+    //    std::cerr << "lu : " << nblus << "caractères " <<
 
     if (!wait_all) {
       // si on ne demande pas d'attendre, on sort qu'en même
@@ -129,7 +129,7 @@ int socklib::ReaderWriter::write(const std::vector<char> &buf) {
   // on utilise la fonction read de base sur le tableau de donnée du vector
   int ecrit = this->write(buf.data(), 0, buf.size());
 
-  return ecrit;  
+  return ecrit;
 }
 
 int socklib::ReaderWriter::write(const char* buf, int offset, int len) {

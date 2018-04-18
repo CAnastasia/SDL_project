@@ -50,8 +50,8 @@ all: $(NAME)
 #                             Compilation image                               #
 #******************************************************************************#
 sdl : $(OBJ_IMG3)
-	@$(CC) $(CFLAGS)  $(OBJ_IMG3)  $(LIBS_SDL) -L ./ -o ./bin/test
-	@echo "   👍  👍  👍 \033[1mTEST CREATED\033[0m 👍  👍  👍"
+	@$(CC) $(CFLAGS)  $(OBJ_IMG3)  $(LIBS_SDL) -L ./ -o ./bin/sdl
+	@echo "   👍  👍  👍 \033[1mSDL CREATED\033[0m 👍  👍  👍"
 
 exemple : $(OBJ_IMG2)
 	@$(CC) $(CFLAGS) $(OBJ_IMG2) $(LIBS_SDL) -L ./ -o ./bin/exemple

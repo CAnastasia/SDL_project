@@ -1,5 +1,5 @@
-#include <socklib.hpp>
-#include <bufferedreaderwriter.hpp>
+#include "socklib.hpp"
+#include "bufferedreaderwriter.hpp"
 #include <sstream>
 #include <cstring>
 #include <algorithm>
@@ -36,9 +36,9 @@ void std::swap(socklib::BufferedReaderWriter &a, socklib::BufferedReaderWriter &
 
 socklib::BufferedReaderWriter &
 socklib::BufferedReaderWriter::operator=(socklib::BufferedReaderWriter &&brw) {
-  
+
   std::swap(*this, brw);
-  
+
   return *this;
 }
 
@@ -64,7 +64,7 @@ bool socklib::BufferedReaderWriter::_intern_complete_buffer(int deja) {
 void socklib::BufferedReaderWriter::_intern_retire_buffer(int nboctet) {
   std::ostringstream msg;
   int arrives = fin-deb;
-  
+
   if (arrives < nboctet) {
     msg  << "On ne peut pas retirer du buffer " << nboctet
 	 << " alors qu'il a " << arrives << " octets";
@@ -108,7 +108,7 @@ socklib::BufferedReaderWriter::read_data(char *buff, int offset, int len, bool w
     // si après une lecture, fin-deb est nul c'est que la socket est fermée
     return 0;
   }
-  
+
   if (fin-deb>=len) {
     // il y a déjà dans le buffer suffisamment de données
     memcpy(buff, this->buf.data()+deb, len);
@@ -172,7 +172,7 @@ socklib::BufferedReaderWriter::read_until(char end) {
       // le fanion a été trouvé
       int taille = trouve-(buf.begin()+deb)+1;
       int actuel = ret.size();
-      
+
       ret.resize(actuel+taille);
       memcpy(ret.data()+actuel, buf.data()+deb, taille);
       // on vide le buffer

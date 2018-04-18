@@ -137,3 +137,13 @@ int TableauDynamique::rechercherElement (ElementTD e) const {
     return res;
 }
 
+std::string TableauDynamique::TDtoString() {
+    std::string list = "";
+
+	for (unsigned int i = 0; i < taille_utilisee ; i++) {
+		list += to_string(valeurIemeElement(i));
+		list += " "; 					   	//nombres d'espaces entre les nombres de la liste
+	}
+
+	return list;
+}

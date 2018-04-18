@@ -1,189 +1,115 @@
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <string>
+#include <vector>
 #include <unistd.h>
-#include <string.h>
+#include <sys/types.h>
 #include <sys/socket.h>
-#include <netdb.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <strings.h>
+#include <string.h>
+#include <stdlib.h>
 
-#define PORT "8080"
 
 
-int
-main (int argc, char *argv[])
-{
-  // structure pour faire la demande de port
-  struct addrinfo hints;
-  // structure pour stocker et lire les résultats
-  struct addrinfo *result, *rp;
-  // socket d'attente (s) et de discution (t)
-  int t, s=-1;
-  // structures pour stocker les info concernant le client
-  struct sockaddr_storage peer_addr;
-  socklen_t peer_addr_len = sizeof(peer_addr);
-  // variables pour tester si les fonctions donnent un résultats ou une erreur
-  int res;
-  int bon;
-  // Des variable pour contenir de adresse de machine et des numero de port afin de les afficher
-  char hname[NI_MAXHOST], sname[NI_MAXSERV];
+#include "../socklib/bufferedreaderwriter.hpp"
 
-  
+using std::string;
+using std::vector;
+using std::cout;
+using std::cerr;
+using std::cin;
+using std::endl;
 
-  // on rempli la structure hints de demande d'adresse
-  memset(&hints, 0, sizeof(struct addrinfo));
-  hints.ai_family = AF_UNSPEC;    /* IPv4 ou IPv6 */
-  hints.ai_socktype = SOCK_STREAM; /* socket flux connectée */
-  hints.ai_flags = AI_PASSIVE;    /* Les signifie que toutes les addresse de la machine seront utilisée */
-  hints.ai_protocol = 0;          /* Any protocol */
-  hints.ai_addrlen = 0; 
-  hints.ai_addr = NULL;           
-  hints.ai_canonname = NULL;
-  hints.ai_next = NULL;
+const size_t TAILLE_BUFF = 100;
 
-  // on effectue la demande pour le port PORT défini par "8888"
-  res = getaddrinfo(NULL, PORT, &hints, &result);
-  if (res != 0) { // c'est une erreur
-    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(res));
-    exit(1);
-  }
-  
-  // si res = 0 le véritable résultat de la fontion est l'argument result
-  // qui contient une liste d'addresses correspondant à la demande on va les
-  // rester jusqu'à en trouver une qui convient
-  rp = result;
-  bon = 0;
-  while (rp != NULL) {
-    // on parcourt la liste pour en trouver une qui convienne
-    int yes = 1;
+int main(int argc, char *argv[]) {
+  bool serveur;
 
-    s = socket(rp->ai_family, rp->ai_socktype,rp->ai_protocol);
-    // si le résultat est -1 cela n'a pas fonctionné on recommence avec la prochaine
-    if (s == -1) {
-      perror("Création de la socket");
-      rp = rp->ai_next;
-      continue;
-    }    
-    
-    // partie optionnelle pour éviter d'être rejeté par le système si le précédant test a planté
-    res = setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &yes,
-		     sizeof(int));
-    if (res == -1) {
-            perror("setsockopt");
-	    rp = rp->ai_next;
-            continue;
+  string port;
+  string adresse;
+  pid_t pid;
+  int fd;
+
+  // on teste le nombre d'arguments.
+  // Attention, il y a toujours le nom du programme donc argc==
+  // signifie un argument.
+  if (argc == 2) {
+    serveur = true;
+    port = argv[1];
+
+    cerr << "Je suis serveur sur le port " << port << endl;
     }
-    // fin de la partie optionnelle
+    else {
+      cerr << "usage " << argv[0] << " <port> : pour le serveur" << endl
+  	 << "      " << argv[0] << " <serveur> <port> : pour le clinet" << endl;
+      exit(1);
+    }
+      string ligne;
+    int s_serv = socklib::CreeSocketServeur(port);
 
-    // si la socket a été obtenue, on essaye de réserver le port
-    res = bind(s, rp->ai_addr, rp->ai_addrlen);
-    if (res == 0 ) {// cela a fonctionné on affiche l'information
-      bon = 1;
+    while(1)
+    {
+      // #########################
+      // code du serveur
+      // #########################
 
-      // on récupère des informations affichables
-      res = getnameinfo(rp->ai_addr, rp->ai_addrlen,
-			hname, NI_MAXHOST,
-			sname, NI_MAXSERV,
-			NI_NUMERICSERV|NI_NUMERICHOST);
-      if (res != 0) {
-	fprintf(stderr, "getnameinfo: %s\n", gai_strerror(res));
-	exit (1);
+      // création de la socket d'écoute
+
+      // attente d'un nouveau client
+      size_t size_mess = 50;
+      int s = socklib::AcceptConnexion(s_serv);
+      if (s != -1)
+      {
+        pid =  fork();
+        if (pid == -1)
+        {
+          printf("%s\n", "exit_error");
+        }
+        if(pid == 0)
+        {
+          fd = open("leader_board.txt",O_RDWR);
+          socklib::BufferedReaderWriter rw(fd);
+          socklib::BufferedReaderWriter rw2(s);
+          while (true) {
+            char  mess[50];
+            bzero(&mess,50);
+            int res = recv(s, &mess,50, 0);
+            exit_error("serveur : lecture sur la socket", res == -1, errno);
+
+            if (res == 1 && mess[0]=='\n') {
+      	         cout << "fermeture de la connexion"  << endl;
+      	          break;
+            }
+
+            lseek(fd,0, SEEK_END);
+            write(fd,&mess,strlen(mess));
+            char test='\n';
+            write(fd,&test,1);
+        //  cout << "> " << mess.data() << endl;
+          }
+          lseek(fd,0,SEEK_SET);
+          while (true) {
+          string ligne = rw.read_line();
+            if (ligne == "") {
+              ligne="\n";
+              rw2.write(ligne);
+              break;
+            }
+            cout<<ligne;
+            rw2.write(ligne);
+        //  cout << "> " << mess.data() << endl;
+          }
+          close(fd);
+          close (s_serv);
+          close (s);
+        }
+        printf("%s\n","parent" );
       }
-      printf ("La socket %d est maintenant en attente sur l'adresse %s le port %s\n",
-	      s, hname, sname); 
-      break; 
-    }
-    else { // sinon le bind a été impossible, il faut fermer la socket
-      perror("Imposible de réserver l'adresse");
-      close (s);
-    }
-
-    rp = rp->ai_next;
+      // la lecture que je fait là n'est pas très propre,
+      // il faudra l'améliorer.
   }
 
-  if (bon == 0) { // Cela n'a jamais fonctionné
-    fprintf(stderr, "Impossible de faire un bind\n");
-    exit(1);
-  }
-
-  
-  // on libère la structure devenue inutile
-  freeaddrinfo(result);
-
-  // ######################################################
-  // (2.2) Attente de connexion 
-  // ######################################################
-  res = listen (s, 5);
-  if (res < 0) {
-    perror("listen");
-    close(s);
-    exit(1);
-  }
-
-  // ######################################################
-  // (4) Acceptation d'une connexion
-  // Le serveur accepte l'une des demandes arrivées depuis le listen ou
-  // attend s'il n'y en a pas
-  // ######################################################
-
-  t = accept (s, (struct sockaddr *)&peer_addr, &peer_addr_len);
-  // s : la socket d'attente
-  // peer_addr : la structure où on va stocker les infos
-  //             sur le client
-  // peer_addr_len : donnée = la taille de tadr (pour
-  //                éviter le dépassement)
-  // t : La socket qui servira pour la 
-  //     discution
-
-  if (t == -1) { // il y a eu une erreur
-    perror("accept");
-    close (s);
-    exit(1);
-  }
-  res = getnameinfo((struct sockaddr*)&peer_addr, peer_addr_len,
-		    hname, NI_MAXHOST,
-		    sname, NI_MAXSERV,
-		    NI_NUMERICSERV);
-  if (res != 0) {
-    fprintf(stderr, "getnameinfo: %s\n", gai_strerror(res));
-    exit (1);
-  }
-  printf ("La socket %d a eu un client depuis %s sur le port %s\n",
-	  s, hname, sname);
-  
-  // ######################################################
-  // (5) Dialogue
-  // Une fois la connexion établie, le serveur et le client peuvent s'échanger des messages
-  // envoyés par write() ou send() et lus par read()ou recv() selon un protocole établi.
-  // Ici nous utiliseront le protocole suivant : seul le client écrit, le serveur lit octet
-  // par octet
-  // ######################################################  
-  while(1) {
-    // le caractère dans lequel on va stocker ce qui est envoyé par le client
-    char buff;
-    // le nombre de caractère lu
-    size_t nbo;
-    
-    nbo = read(t, &buff, 1);
-    if (nbo == -1) {
-      perror("erreur à la réception");
-    }
-    if (nbo == 0) {
-      // C'est fini
-      break;
-    }
-    printf("recu : %c\n", buff);
-    
-  }
-  
-  // ######################################################
-  // (6) Fermeture de la connexion
-  // ######################################################
-  if (close(t) == -1) {
-    perror("Problème à la fermeture de la socket de discution");
-  }
-  if (close(s) == -1) {
-    perror("Problème à la fermeture de la socket d'attente");
-  }
 
   return 0;
 }

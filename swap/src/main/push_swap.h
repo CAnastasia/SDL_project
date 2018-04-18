@@ -1,7 +1,7 @@
 #ifndef NIVEAU_H
 #define NIVEAU_H
 
-#include<string.h>
+#include <string.h>
 #include "TableauDynamique.h"
 using namespace std;
 

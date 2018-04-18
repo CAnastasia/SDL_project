@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include <socklib.hpp>
-#include <readerwriter.hpp>
+#include "socklib.hpp"
+#include "readerwriter.hpp"
 
 namespace std {
     /**
@@ -46,7 +46,7 @@ namespace socklib {
      * @brief fonction **interne** de lecture du buffer
      * @param deja : à partir de quel caractère doit-t-on considérer la lecture.
      * @return false si la socke test fermée
-     * 
+     *
      * cette fonction retourne imédiatement si le buffer contient déjà plus de d'octet que demandé.
      * Sinon, il appelle la lecture sur le fd et tente de compléter le buffer. Dans ce cas elle peut être
      * blocante.
@@ -56,7 +56,7 @@ namespace socklib {
     /**
      * @brief fonction **interne** utilitaire de nettoyage du buffer
      * @param nboctet : le nombre d'octet à retirer
-     * 
+     *
      */
     void _intern_retire_buffer(int nboctet);
 
@@ -64,7 +64,7 @@ namespace socklib {
     /**
      * @brief Constructeur à partir d'un descripteur de fichier.
      * @param fd : le *file descriptor* associé.
-     * 
+     *
      * Ce constructeur initialise le buffer, il s'utilise à partir d'un FD existant.
      *
      * Par exemple ce constructeur s'utilise comme cela :
@@ -72,12 +72,12 @@ namespace socklib {
      * int sock_client = socklib::CreeSocketClient("localhost", "23351");
      * BufferedReaderWriter rw(sock_client);
      * @endcode
-     */    
+     */
     explicit BufferedReaderWriter(int fd);
 
     /**
      *  @brief Destructeur il fermera automatiquement le FD
-     */    
+     */
     ~BufferedReaderWriter();
 
     /**
@@ -122,18 +122,18 @@ namespace socklib {
      * @param a,b : les deux `BufferedReaderWriter` à échanger
      */
     friend void std::swap(BufferedReaderWriter &a, BufferedReaderWriter &b);
-    
+
     /**
      * @brief fermeture du flux
      */
     void close();
-    
+
     /**
      * @brief récupération de donnée
      * @return un vector avec les données lues
      *
      * Cette fonction retourne soit les données du buffer soit fait une
-     * requète sur le fd sous-jascent (ce qui peut être blocant). 
+     * requète sur le fd sous-jascent (ce qui peut être blocant).
      */
     std::vector<char> read();
 
@@ -162,7 +162,7 @@ namespace socklib {
      */
     int read_data(char *buff, int offset, int len, bool wait=true);
 
-    
+
     /**
      * @brief récupération jusqu'à un fanion ou la fermeture
      * @param end : le caractère attendu (il est concervé dans le tableau lu)
@@ -191,10 +191,10 @@ namespace socklib {
 
     /**
      * @brief test s'il y a qqchose à lire
-     * @return true s'il y a des octets à lire, false sinon 
+     * @return true s'il y a des octets à lire, false sinon
      */
     bool test_read();
-    
+
     /**
      * @brief Envoie/Écrit des données sur le flux
      * @param data : les données
@@ -221,7 +221,7 @@ namespace socklib {
      * travail, mais elle ne ferme pas le FD qui lui a été transmis.
      */
     int do_copy(int dest);
-    
+
     /**
      * @brief copie le contenu d'un fichier ou d'une socket dans un autre jusqu'à la fermeture du premier
      * @param dest : le ReaderWriter où copier le contenu de l'objet appelant
@@ -230,4 +230,3 @@ namespace socklib {
     int do_copy(socklib::ReaderWriter &dest);
   };
 }
-
