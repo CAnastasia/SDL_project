@@ -31,11 +31,15 @@ la pile b. Le dernier élément devient le premier.
 11)rrr : rra et rrb en même temps.
 
 Fonctionnalités du programme:
-1)Saisir nom jouer 
+1)Saisir nom jouer
+
 2)Plusieurs niveaux 
 3)leader board
+
 4)Application des instructions sur les listes 
-5)Muli-joueur incomplet 
+
+5)Muli-joueur incomplet
+
 6)timer
 
 Dossiers:
