@@ -4,10 +4,12 @@ Regles de jeu:
 
 • Le jeu est constitué de 2 piles nommées a et b.
 • Au départ :
-	◦ a contient un nombre arbitraire d’entiers positifs ou négatifs, sans doublons.
-	◦ b est vide
+◦ a contient un nombre arbitraire d’entiers positifs ou négatifs, sans doublons.
+◦ b est vide
+
 • Le but du jeu est de trier a dans l’ordre croissant.
 • Pour ce faire, on ne dispose que des opérations suivantes :
+
 1)sa : swap a - intervertit les 2 premiers éléments au sommet de la pile a. Ne fait
 rien s’il n’y en a qu’un ou aucun.
 2)sb : swap b - intervertit les 2 premiers éléments au sommet de la pile b. Ne fait
