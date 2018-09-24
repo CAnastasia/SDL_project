@@ -31,9 +31,11 @@ la pile b. Le dernier élément devient le premier.
 11)rrr : rra et rrb en même temps.
 
 Fonctionnalités du programme:
+
 1)Saisir nom jouer
 
 2)Plusieurs niveaux 
+
 3)leader board
 
 4)Application des instructions sur les listes 
@@ -43,18 +45,31 @@ Fonctionnalités du programme:
 6)timer
 
 Dossiers:
+
 dossier bin: les execut
+
 dossier data: assets de  l'application
+
 obj: les .o
+
 doc: doxygen,power point presentation, diagramme de gantt, diagramme des modules 
+
 src : 
+
 	dossiers:
+	
 			main: fonctionnalités pour l'algorithme 
+			
 			sdl2: fonctionnalités sdl
+			
 			serveur: fonctionnalités pour server et la gestion des clients 
+			
 			socklib: fonctionnalités pour la connexion et l'acceptation client-server
+			
 			test: test regression 
+			
 			txt: verssion txt 
+			
 makefile 
 
 
