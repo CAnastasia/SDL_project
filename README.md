@@ -3,14 +3,14 @@ Commande de compilatoin : make test exemple sdl serveur
 
 Regles de jeu:
 
-• Le jeu est constitué de 2 piles nommées a et b.
+   • Le jeu est constitué de 2 piles nommées a et b.
 
 • Au départ :
 
 
-◦ a contient un nombre arbitraire d’entiers positifs ou négatifs, sans doublons.
+   ◦ a contient un nombre arbitraire d’entiers positifs ou négatifs, sans doublons.
 
-◦ b est vide
+   ◦ b est vide
 
 • Le but du jeu est de trier a dans l’ordre croissant.
 
